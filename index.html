@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct Booking - Luxury Villa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF5A5F;
+            --secondary: #00A699;
+            --text: #222222;
+            --bg: #F7F7F7;
+            --white: #FFFFFF;
+            --radius: 12px;
+            --font-heading: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-body); color: var(--text); background: var(--bg); line-height: 1.5; }
+        h1, h2, h3 { font-family: var(--font-heading); }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        img { max-width: 100%; height: auto; display: block; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .btn { display: inline-block; background: var(--primary); color: var(--white); padding: 12px 24px; border-radius: 8px; font-weight: 600; text-align: center; cursor: pointer; border: none; transition: opacity 0.2s; }
+        .btn:hover { opacity: 0.9; }
+        .btn-outline { background: transparent; border: 1px solid var(--text); color: var(--text); }
+        
+        /* 1. Sticky Navbar */
+        header { position: sticky; top: 0; background: var(--white); z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 15px 0; }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        .nav-links { display: none; gap: 20px; }
+        @media (min-width: 768px) { .nav-links { display: flex; } }
+
+        /* 2. Hero */
+        .hero { position: relative; height: 70vh; min-height: 500px; display: flex; align-items: center; justify-content: center; text-align: center; color: var(--white); }
+        .hero::before { content: ''; position: absolute; inset: 0; background: url('https://picsum.photos/seed/villa/1920/1080') center/cover; filter: brightness(0.6); z-index: -1; }
+        .hero-content h1 { font-size: 3rem; margin-bottom: 10px; }
+        .hero-content p { font-size: 1.2rem; margin-bottom: 30px; }
+        .booking-widget-inline { background: var(--white); padding: 20px; border-radius: var(--radius); display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; color: var(--text); max-width: 800px; margin: 0 auto; }
+        .booking-widget-inline input, .booking-widget-inline select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+
+        /* 3. Social Proof */
+        .social-proof { background: var(--white); padding: 20px 0; text-align: center; border-bottom: 1px solid #eee; }
+        .social-proof span { margin: 0 15px; font-weight: 600; display: inline-block; }
+        .star { color: var(--secondary); }
+
+        /* Main Layout */
+        .main-layout { display: flex; flex-direction: column; gap: 40px; padding: 40px 0; }
+        @media (min-width: 992px) { .main-layout { flex-direction: row; } .content-col { flex: 1; } .sidebar-col { width: 350px; } }
+
+        /* 4. Photo Gallery */
+        .gallery { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 40px; border-radius: var(--radius); overflow: hidden; }
+        .gallery img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: transform 0.3s; }
+        .gallery img:hover { transform: scale(1.02); }
+        .gallery-main { height: 300px; }
+        .gallery-grid { display: none; }
+        @media (min-width: 768px) { 
+            .gallery { grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 200px 200px; }
+            .gallery-main { grid-column: 1; grid-row: 1 / 3; height: 100%; }
+            .gallery-grid { display: block; }
+        }
+        .gallery-action { text-align: center; margin-top: 15px; }
+
+        /* 5. Amenities */
+        .amenities { margin-bottom: 40px; }
+        .amenities h2 { margin-bottom: 20px; }
+        .amenities-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; }
+        .amenity-item { display: flex; align-items: center; gap: 10px; }
+
+        /* 6. Location */
+        .location { margin-bottom: 40px; }
+        .location h2 { margin-bottom: 20px; }
+        .map-placeholder { background: #ddd; height: 300px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; margin-bottom: 15px; }
+        .chips { display: flex; gap: 10px; flex-wrap: wrap; }
+        .chip { background: var(--white); padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; border: 1px solid #eee; }
+
+        /* 7. Reviews */
+        .reviews { margin-bottom: 40px; }
+        .reviews h2 { margin-bottom: 20px; }
+        .review-cards { display: grid; gap: 20px; }
+        @media (min-width: 768px) { .review-cards { grid-template-columns: repeat(3, 1fr); } }
+        .review-card { background: var(--white); padding: 20px; border-radius: var(--radius); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .review-card p { font-style: italic; margin-bottom: 10px; }
+        .reviewer { font-weight: 600; font-size: 0.9rem; }
+
+        /* 8. Booking Sidebar */
+        .sidebar-widget { background: var(--white); padding: 24px; border-radius: var(--radius); box-shadow: 0 5px 15px rgba(0,0,0,0.1); position: sticky; top: 100px; }
+        .price-header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 20px; }
+        .price-direct { font-size: 1.5rem; font-weight: 700; }
+        .price-airbnb { text-decoration: line-through; color: #777; font-size: 1rem; }
+        .savings-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; margin-bottom: 15px; display: inline-block; }
+        .urgency { color: var(--primary); font-size: 0.9rem; font-weight: 600; margin-bottom: 15px; }
+        .booking-form { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+        .booking-form input, .booking-form select { padding: 12px; border: 1px solid #ccc; border-radius: 8px; width: 100%; }
+        .price-breakdown { border-top: 1px solid #eee; padding-top: 15px; margin-bottom: 20px; }
+        .price-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .price-total { font-weight: 700; font-size: 1.2rem; border-top: 1px solid #eee; padding-top: 10px; }
+        .sidebar-widget .btn { width: 100%; }
+
+        /* 9. Trust Signals */
+        .trust-signals { margin-top: 20px; font-size: 0.9rem; color: #555; }
+        .trust-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+
+        /* 10. Footer */
+        footer { background: var(--text); color: var(--white); padding: 40px 0 20px; margin-top: 60px; }
+        .footer-content { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
+        .footer-links a { color: #ccc; display: block; margin-bottom: 10px; }
+        .footer-links a:hover { color: var(--white); }
+        .copyright { text-align: center; color: #888; font-size: 0.9rem; border-top: 1px solid #444; padding-top: 20px; }
+        
+        /* Lightbox */
+        .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200; align-items: center; justify-content: center; }
+        .lightbox.active { display: flex; }
+        .lightbox img { max-height: 90vh; max-width: 90vw; }
+        .lightbox-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 2rem; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Sticky Navbar -->
+    <header>
+        <div class="container nav-container">
+            <div class="logo">Villa Azure</div>
+            <nav class="nav-links">
+                <a href="#gallery">Gallery</a>
+                <a href="#amenities">Amenities</a>
+                <a href="#location">Location</a>
+                <a href="#reviews">Reviews</a>
+            </nav>
+            <a href="#book" class="btn">Book Now</a>
+        </div>
+    </header>
+
+    <!-- 2. Hero -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>Escape to Paradise</h1>
+            <p>Experience luxury living with breathtaking ocean views.</p>
+            <div class="booking-widget-inline">
+                <input type="date" aria-label="Check-in">
+                <input type="date" aria-label="Check-out">
+                <select aria-label="Guests">
+                    <option>2 Guests</option>
+                    <option>4 Guests</option>
+                    <option>6 Guests</option>
+                </select>
+                <button class="btn" onclick="document.getElementById('book').scrollIntoView({behavior: 'smooth'})">Book Now</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Social Proof Strip -->
+    <div class="social-proof">
+        <div class="container">
+            <span><span class="star">★</span> 4.98 Rating</span>
+            <span>•</span>
+            <span>124 Reviews</span>
+            <span>•</span>
+            <span>🏆 Superhost</span>
+        </div>
+    </div>
+
+    <div class="container main-layout">
+        <div class="content-col">
+            
+            <!-- 4. Photo Gallery -->
+            <section id="gallery">
+                <div class="gallery">
+                    <img src="https://picsum.photos/seed/villa1/800/600" alt="Villa Exterior" class="gallery-main" onclick="openLightbox(this.src)">
+                    <img src="https://picsum.photos/seed/villa2/400/300" alt="Living Room" class="gallery-grid" onclick="openLightbox(this.src)">
+                    <img src="https://picsum.photos/seed/villa3/400/300" alt="Bedroom" class="gallery-grid" onclick="openLightbox(this.src)">
+                    <img src="https://picsum.photos/seed/villa4/400/300" alt="Kitchen" class="gallery-grid" onclick="openLightbox(this.src)">
+                    <img src="https://picsum.photos/seed/villa5/400/300" alt="Pool" class="gallery-grid" onclick="openLightbox(this.src)">
+                </div>
+                <div class="gallery-action">
+                    <button class="btn btn-outline" onclick="openLightbox('https://picsum.photos/seed/villa1/800/600')">View all photos</button>
+                </div>
+            </section>
+
+            <!-- 5. Amenities Grid -->
+            <section id="amenities" class="amenities">
+                <h2>What this place offers</h2>
+                <div class="amenities-grid">
+                    <div class="amenity-item"><span>📶</span> Fast WiFi</div>
+                    <div class="amenity-item"><span>🍳</span> Full Kitchen</div>
+                    <div class="amenity-item"><span>🏊</span> Private Pool</div>
+                    <div class="amenity-item"><span>❄️</span> Air Conditioning</div>
+                    <div class="amenity-item"><span>🚗</span> Free Parking</div>
+                    <div class="amenity-item"><span>💻</span> Workspace</div>
+                    <div class="amenity-item"><span>🌊</span> Ocean View</div>
+                    <div class="amenity-item"><span>🔥</span> BBQ Grill</div>
+                </div>
+                <div class="gallery-action" style="text-align: left; margin-top: 20px;">
+                    <a href="#book" class="btn btn-outline">Book Now</a>
+                </div>
+            </section>
+
+            <!-- 6. Location Section -->
+            <section id="location" class="location">
+                <h2>Where you'll be</h2>
+                <div class="map-placeholder">
+                    <p>Interactive Map Placeholder</p>
+                </div>
+                <div class="chips">
+                    <span class="chip">🏖️ 5 mins to Beach</span>
+                    <span class="chip">🏙️ 10 mins to Town Center</span>
+                    <span class="chip">✈️ 25 mins to Airport</span>
+                </div>
+                <div class="gallery-action" style="text-align: left; margin-top: 20px;">
+                    <a href="#book" class="btn btn-outline">Book Now</a>
+                </div>
+            </section>
+
+            <!-- 7. Reviews -->
+            <section id="reviews" class="reviews">
+                <h2>Guest Reviews</h2>
+                <div class="review-cards">
+                    <div class="review-card">
+                        <div class="star">★★★★★</div>
+                        <p>"Absolutely stunning property. The views are even better in person. Will definitely return!"</p>
+                        <div class="reviewer">Sarah M. - Oct 2025</div>
+                    </div>
+                    <div class="review-card">
+                        <div class="star">★★★★★</div>
+                        <p>"Spotless clean, great amenities, and the host was incredibly responsive. A perfect getaway."</p>
+                        <div class="reviewer">James T. - Sep 2025</div>
+                    </div>
+                    <div class="review-card">
+                        <div class="star">★★★★★</div>
+                        <p>"The private pool and outdoor kitchen made our family vacation unforgettable. Highly recommend."</p>
+                        <div class="reviewer">Elena R. - Aug 2025</div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- 8. Booking Sidebar Widget -->
+        <div class="sidebar-col">
+            <div id="book" class="sidebar-widget">
+                <div class="savings-badge">Save 10% booking direct</div>
+                <div class="price-header">
+                    <span class="price-direct">$250 <span style="font-size:1rem;font-weight:400">/ night</span></span>
+                    <span class="price-airbnb">$278 on Airbnb</span>
+                </div>
+                
+                <div class="urgency">🔥 Only 3 nights left this month!</div>
+                
+                <div class="booking-form">
+                    <div style="display:flex;gap:10px;">
+                        <input type="date" aria-label="Check-in" id="checkin">
+                        <input type="date" aria-label="Check-out" id="checkout">
+                    </div>
+                    <select aria-label="Guests">
+                        <option>1 Guest</option>
+                        <option selected>2 Guests</option>
+                        <option>3 Guests</option>
+                        <option>4 Guests</option>
+                    </select>
+                </div>
+
+                <div class="price-breakdown">
+                    <div class="price-row">
+                        <span>$250 x 3 nights</span>
+                        <span>$750</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Cleaning fee</span>
+                        <span>$80</span>
+                    </div>
+                    <div class="price-row price-total">
+                        <span>Total</span>
+                        <span>$830</span>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="alert('Proceeding to secure checkout...')">Book Now</button>
+
+                <!-- 9. Trust Signals -->
+                <div class="trust-signals">
+                    <div class="trust-item"><span>🛡️</span> Secure payment processing</div>
+                    <div class="trust-item"><span>📅</span> Free cancellation for 48 hours</div>
+                    <div class="trust-item"><span>⚡</span> Host responds within 1 hour</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img" src="" alt="Enlarged view">
+    </div>
+
+    <!-- 10. Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <h3 style="margin-bottom: 15px;">Villa Azure</h3>
+                    <p style="color: #ccc; max-width: 300px;">Luxury direct booking experience. Save on fees and enjoy a premium stay.</p>
+                </div>
+                <div class="footer-links">
+                    <h4 style="margin-bottom: 15px;">Support</h4>
+                    <a href="#">Contact Us</a>
+                    <a href="#">FAQ</a>
+                    <a href="#">Cancellation Policy</a>
+                </div>
+                <div class="footer-links">
+                    <h4 style="margin-bottom: 15px;">Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 15px;">Questions?</h4>
+                    <a href="#" class="btn" style="background: #25D366;">Chat on WhatsApp</a>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2026 Villa Azure. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Lightbox functionality
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+
+        function openLightbox(src) {
+            lightboxImg.src = src;
+            lightbox.classList.add('active');
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+        }
+
+        // Set default dates
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const threeDaysLater = new Date(today);
+            threeDaysLater.setDate(threeDaysLater.getDate() + 3);
+
+            const formatDate = (date) => date.toISOString().split('T')[0];
+            
+            const checkin = document.getElementById('checkin');
+            const checkout = document.getElementById('checkout');
+            
+            if(checkin && checkout) {
+                checkin.value = formatDate(tomorrow);
+                checkout.value = formatDate(threeDaysLater);
+            }
+        });
+    </script>
+</body>
+</html>
